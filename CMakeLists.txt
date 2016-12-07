@@ -1,55 +1,83 @@
 cmake_minimum_required(VERSION 3.6)
-set(PROJECT_NAME Nine)
-project(${PROJECT_NAME})
+
+project(Nine)
+
+option(GLFW_BUILD_DOCS OFF)
+option(GLFW_BUILD_EXAMPLES OFF)
+option(GLFW_BUILD_TESTS OFF)
+add_subdirectory(deps/glfw)
+
+option(ASSIMP_BUILD_ASSIMP_TOOLS OFF)
+option(ASSIMP_BUILD_SAMPLES OFF)
+option(ASSIMP_BUILD_TESTS OFF)
+add_subdirectory(deps/assimp)
+
 
 # -------------------------------------------------------------------------------------------------------------------- #
 #
 # -------------------------------------------------------------------------------------------------------------------- #
 set(CMAKE_CXX_STANDARD 11)
 
-# -------------------------------------------------------------------------------------------------------------------- #
-# DEPENDENCIES
-# -------------------------------------------------------------------------------------------------------------------- #
-# OpenGL
-#message("Locating OpenGL...")
-find_package(OpenGL REQUIRED)
-#include_directories(${OpenGL_INCLUDE_DIRS})
-#link_directories(${OpenGL_LIBRARY_DIRS})
-#add_definitions(${OpenGL_DEFINITIONS})
-#if (NOT OpenGL_FOUND)
-#    message(ERROR " ...OpenGL not found!")
-#else(OpenGL_FOUND)
-#    message("...OpenGL found!")
-#endif(NOT OpenGL_FOUND)
-# glad
-#set(glad_INCLUDE ${PROJECT_SOURCE_DIR}/dependencies/glad/include)
-#set(glad_SOURCE ${PROJECT_SOURCE_DIR}/dependencies/glad/src)
-#include_directories(${glad_INCLUDE} ${glad_SOURCE})
-# GLFW
-message("Locating GLFW...")
-find_package(glfw3 3.2 REQUIRED)
-include_directories(${glfw3_INCLUDE_DIRS})
-link_directories(${glfw3_LIBRARY_DIRS})
-add_definitions(${glfw3_DEFINITIONS})
-if (NOT glfw3_FOUND)
-    message(ERROR " ...GLFW not found!")
-else(glfw3_FOUND)
-    message("...GLFW found!")
-endif(NOT glfw3_FOUND)
-
-include_directories(dependencies/glad)
+if (NOT EXISTS ${CMAKE_SOURCE_DIR}/build/)
+    execute_process(COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_SOURCE_DIR}/build/)
+endif()
 
 # -------------------------------------------------------------------------------------------------------------------- #
 #
 # -------------------------------------------------------------------------------------------------------------------- #
-set(HEADER_FILES
-        include/Launcher.h
-        )
+include_directories(
+        include/
+        deps/assimp/include/
+        deps/glad/include/
+        deps/glfw/include/
+        deps/glm/
+)
 
-set(SOURCE_FILES
-        src/Launcher.cpp
-        )
+file(GLOB DEPS_SOURCES
+        deps/glad/src/glad.c)
+file(GLOB PROJECT_HEADERS
+        include/*.h)
+file(GLOB PROJECT_SOURCES
+        src/*.cpp)
+file(GLOB PROJECT_SHADERS
+        src/shaders/*.vert
+        src/shaders/*.tesc
+        src/shaders/*.tese
+        src/shaders/*.geom
+        src/shaders/*.frag)
 
-include_directories(include)
+file(GLOB PROJECT_CONFIGS
+        CMakeLists.txt
+        README.md
+        .gitignore
+        .gitmodules)
 
-add_executable(${PROJECT_NAME} ${SOURCE_FILES})
+source_group("include" FILES ${PROJECT_HEADERS})
+source_group("shaders" FILES ${PROJECT_SHADERS})
+source_group("src" FILES ${PROJECT_SOURCES})
+source_group("deps" FILES ${DEPS_SOURCES})
+
+#add_definitions(-D GLFW_INCLUDE_NONE -D PROJECT_SOURCE_DIR=\"${PROJECT_SOURCE_DIR}\")
+
+add_executable(${PROJECT_NAME}
+        ${PROJECT_SOURCES}
+        ${PROJECT_HEADERS}
+        ${PROJECT_SHADERS}
+        ${PROJECT_CONFIGS}
+        ${DEPS_SOURCES})
+
+#message("Locating glfw3...")
+#find_package(glfw3 REQUIRED)
+#include_directories(${glfw3_INCLUDE_DIRS})
+#link_directories(${glfw3_LIBRARY_DIRS})
+#add_definitions(${glfw3_DEFINITIONS})
+#if (NOT glfw3_FOUND)
+#    message(ERROR " ...glfw3 not found!")
+#else(glfw3_FOUND)
+#    message("...glfw3 found! @ " ${glfw3_LIBRARY_DIRS})
+#endif(NOT glfw3_FOUND)
+
+
+target_link_libraries(${PROJECT_NAME} glfw assimp ${GLFW_LIBRARIES})
+
+set_target_properties(${PROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/build")

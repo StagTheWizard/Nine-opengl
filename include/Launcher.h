@@ -12,5 +12,6 @@ const char *WINDOW_TITLE = "Nine-opengl";
 
 int main(int argc, char **argv);
 
+void error_callback(int error, const char* description);
 
 #endif //NINE_OPENGL_LAUNCHER_H

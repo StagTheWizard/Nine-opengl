@@ -6,6 +6,7 @@
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <cstdio>
 
 
 int main(int argc, char **argv) {
@@ -13,6 +14,7 @@ int main(int argc, char **argv) {
         glfwTerminate();
     }
 
+    glfwSetErrorCallback(error_callback);
 
     GLFWwindow *window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE, NULL, NULL);
     if (!window) {
@@ -23,4 +25,9 @@ int main(int argc, char **argv) {
     gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
 
     return 0;
+}
+
+
+void error_callback(int error, const char* description) {
+    fprintf(stderr, "Error: %s\n", description);
 }
