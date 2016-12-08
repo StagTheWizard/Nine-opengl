@@ -8,10 +8,8 @@
 
 int WINDOW_WIDTH = 640;
 int WINDOW_HEIGHT = 480;
-const char *WINDOW_TITLE = "Nine-opengl";
+const char *WINDOW_TITLE = "Nine ALPHA 1.0";
 
 int main(int argc, char **argv);
-
-void error_callback(int error, const char* description);
 
 #endif //NINE_OPENGL_LAUNCHER_H
