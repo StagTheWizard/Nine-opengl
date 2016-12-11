@@ -2,32 +2,24 @@
 // Created by montgomery anderson on 6/12/16.
 //
 
+#include <iostream>
 #include "Launcher.h"
+#include "core/Engine.h"
+#include "core/IntroState.h"
+#include "core/Constants.h"
 
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-#include <cstdio>
+using namespace std;
 
 
 int main(int argc, char **argv) {
-    if (!glfwInit()) {
-        glfwTerminate();
+    std::cout << "Launching " << constants::WINDOW_TITLE << std::endl;
+    Engine *engine = new Engine();
+    if(engine->initialise()) {
+        std::cout << "The Nine engine failed to initialise, closing now." << std::endl;
+        return EXIT_FAILURE;
     }
+    engine->pushState(new IntroState(engine));
+    engine->start();
 
-    glfwSetErrorCallback(error_callback);
-
-    GLFWwindow *window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE, NULL, NULL);
-    if (!window) {
-        glfwTerminate();
-    }
-
-    glfwMakeContextCurrent(window);
-    gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
-
-    return 0;
-}
-
-
-void error_callback(int error, const char* description) {
-    fprintf(stderr, "Error: %s\n", description);
+    return EXIT_SUCCESS;
 }

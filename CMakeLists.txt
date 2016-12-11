@@ -31,14 +31,26 @@ include_directories(
         deps/glad/include/
         deps/glfw/include/
         deps/glm/
+        deps/freetype/include
 )
 
 file(GLOB DEPS_SOURCES
         deps/glad/src/glad.c)
 file(GLOB PROJECT_HEADERS
-        include/*.h)
+        include/Launcher.h
+        include/core/Engine.h
+        include/core/State.h
+        include/core/IntroState.h
+        include/core/Constants.h
+        include/core/Camera.h
+        )
 file(GLOB PROJECT_SOURCES
-        src/*.cpp)
+        src/Launcher.cpp
+        src/core/Engine.cpp
+        src/core/IntroState.cpp
+        src/core/Constants.cpp
+        src/core/Camera.cpp
+        )
 file(GLOB PROJECT_SHADERS
         src/shaders/*.vert
         src/shaders/*.tesc
@@ -78,6 +90,11 @@ add_executable(${PROJECT_NAME}
 #endif(NOT glfw3_FOUND)
 
 
-target_link_libraries(${PROJECT_NAME} glfw assimp ${GLFW_LIBRARIES})
+target_link_libraries(${PROJECT_NAME}
+        glfw
+        assimp
+        freetype
+        ${GLFW_LIBRARIES}
+        )
 
 set_target_properties(${PROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/build")
