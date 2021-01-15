@@ -2,9 +2,12 @@
 // Created by montgomery anderson on 11/12/16.
 //
 
+#include <iostream>
 #include "core/Engine.h"
 #include "core/State.h"
 #include "core/Constants.h"
+#include "core/libs/filelib.h"
+#include "core/EngineRenderer.h"
 
 
 int Engine::initialise() {
@@ -25,15 +28,11 @@ int Engine::initialise() {
 
     // TODO Check for OpenGL initialisation errors
 
-    // Initialise freetype
-    FT_Error freetypeError = FT_Init_FreeType(&freetype);
-    if (freetypeError) {
-        fprintf(stderr, "Could not initialise freetype.");
+    window = glfwCreateWindow(constants::WINDOW_WIDTH, constants::WINDOW_HEIGHT, constants::WINDOW_TITLE, NULL, NULL);
+    if (!window) {
+        glfwTerminate();
         return EXIT_FAILURE;
     }
-
-    window = glfwCreateWindow(constants::WINDOW_WIDTH, constants::WINDOW_HEIGHT, constants::WINDOW_TITLE, NULL, NULL);
-    if (!window) glfwTerminate();
 
     // TODO set up key and error callbacks
 //    glfwSetErrorCallback(error_prompt);
@@ -47,8 +46,12 @@ int Engine::initialise() {
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
 
-    glClearColor(0.3f, 0.3f, 0.3f, 1);
+    glClearColor(0.7f, 0.7f, 0.75f, 1);
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+//    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+    renderer = new EngineRenderer();
+    renderer->initialise();
 
     return EXIT_SUCCESS;
 }
@@ -61,12 +64,19 @@ void Engine::start() {
 
     // Start the main loop
     while (!glfwWindowShouldClose(window)) {
-        this->handleEvents();
-        this->update();
-        this->draw();
+        try {
+            this->handleEvents();
+            this->update();
+            this->draw();
+        } catch (std::exception &e) {
+            std::cout << "Exception caught: " << e.what() << std::endl;
+        }
+
     }
 
     this->cleanup();
+
+    glfwTerminate();
 }
 
 
@@ -94,7 +104,12 @@ void Engine::update() {
 
 
 void Engine::draw() {
-    states.back()->update();
+    glfwPollEvents();
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    states.back()->draw(renderer);
+
+    glfwSwapBuffers(window);
 }
 
 

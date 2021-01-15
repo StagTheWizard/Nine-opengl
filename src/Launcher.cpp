@@ -18,6 +18,7 @@ int main(int argc, char **argv) {
         std::cout << "The Nine engine failed to initialise, closing now." << std::endl;
         return EXIT_FAILURE;
     }
+
     engine->pushState(new IntroState(engine));
     engine->start();
 

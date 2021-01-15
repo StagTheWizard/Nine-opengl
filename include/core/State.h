@@ -9,6 +9,7 @@
 
 
 class Engine;
+class EngineRenderer;
 
 
 #include "Engine.h"
@@ -16,23 +17,24 @@ class Engine;
 
 class State {
 public:
-    virtual int initialise()    = 0;
-    virtual void cleanup()      = 0;
+    virtual int initialise()                = 0;
+    virtual void cleanup()                  = 0;
+    virtual void pause()                    = 0;
+    virtual void resume()                   = 0;
+    virtual void handleEvents()             = 0;
+    virtual void update()                   = 0;
+    virtual void draw(EngineRenderer *renderer)   = 0;
 
-    virtual void pause()        = 0;
-    virtual void resume()       = 0;
 
-    virtual void handleEvents() = 0;
-    virtual void update()       = 0;
-    virtual void draw()         = 0;
-
-    void ChangeState(Engine* engine, State* state) {
+    void ChangeState(Engine *engine, State *state) {
         engine->changeState(state);
     };
 protected:
     State(Engine *engine) {
         this->engine = engine;
     };
+
+
     ~State() {};
     Engine *engine;
 };

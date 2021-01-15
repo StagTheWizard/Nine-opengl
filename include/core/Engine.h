@@ -7,22 +7,19 @@
 
 
 class State;
+class EngineRenderer;
 
 
 #include <vector>
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include <ft2build.h>
-#include FT_FREETYPE_H
 
 #include "Camera.h"
 
 
 class Engine {
 public:
-    FT_Library freetype;
-
     bool isRunning() { return running; }
 
 
@@ -41,9 +38,11 @@ public:
 private:
     GLFWwindow *window;
     Camera *camera;
-    std::vector<State *> states;
-    bool running;
+    EngineRenderer *renderer;
 
+    std::vector<State *> states;
+
+    bool running;
 };
 
 

@@ -4,7 +4,7 @@
 
 
 #include "core/IntroState.h"
-#include <freetype/freetype.h>
+#include "core/EngineRenderer.h"
 
 
 IntroState::IntroState(Engine *engine) : State(engine) {}
@@ -14,12 +14,6 @@ IntroState::~IntroState() {}
 
 
 int IntroState::initialise() {
-    // Initialise the freetype font.
-    if (FT_New_Face(engine->freetype, "FreeSans.ttf", 0, &face)) {
-        fprintf(stderr, "Could not load font.\n");
-        return EXIT_FAILURE;
-    }
-
     return EXIT_SUCCESS;
 }
 
@@ -39,8 +33,8 @@ void IntroState::handleEvents() {}
 void IntroState::update() {}
 
 
-void IntroState::draw() {
-
+void IntroState::draw(EngineRenderer *renderer) {
+    renderer->renderText(INTRO_TEXT, Font::DEFAULT, glm::vec2(20, 20));
 }
 
 

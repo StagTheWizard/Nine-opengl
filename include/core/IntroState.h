@@ -9,12 +9,14 @@
 #include "State.h"
 
 #include <ft2build.h>
+#include <core/libs/textlib.h>
 #include FT_FREETYPE_H
 
 
 class IntroState : public State {
 public:
-    const char* INTRO_TEXT = "Nine\0";
+    const char* INTRO_TEXT = "Nine Intro Text";
+    textlib::FontData font;
 
     IntroState(Engine *engine);
     ~IntroState();
@@ -27,7 +29,7 @@ public:
 
     void handleEvents();
     void update();
-    void draw();
+    void draw(EngineRenderer *renderer);
 protected:
 private:
     FT_Face face;
